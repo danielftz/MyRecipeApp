@@ -70,12 +70,6 @@ namespace MyRecipeApp
                             {
                                 //BindingContext = _vm.RandomRecipe,
                             }
-                            .Bind(RecipeCard.RecipeNameProperty, nameof(_vm.RandomRecipe.Name), source: _vm.RandomRecipe)
-                            .Bind(RecipeCard.CaloriesProperty, nameof(_vm.RandomRecipe.TotalCalories), source: _vm.RandomRecipe)
-                            .Bind(RecipeCard.ProteinProperty, nameof(_vm.RandomRecipe.TotalProtein), source: _vm.RandomRecipe)
-                            .Bind(RecipeCard.CarbohydrateProperty, nameof(_vm.RandomRecipe.TotalCarbs), source: _vm.RandomRecipe)
-                            .Bind(RecipeCard.FatProperty, nameof(_vm.RandomRecipe.TotalFat), source: _vm.RandomRecipe)
-                            .Bind(RecipeCard.TimeToMakeProperty, nameof(_vm.RandomRecipe.TimeToMake), source: _vm.RandomRecipe)
                             .Row(1).Column(0,2)
                         }
                     }.LayoutFlags(AbsoluteLayoutFlags.All)
@@ -128,7 +122,7 @@ namespace MyRecipeApp
                                     .Bind(RecipeCard.CarbohydrateProperty, nameof(Recipe.TotalCarbs))
                                     .Bind(RecipeCard.FatProperty, nameof(Recipe.TotalFat))
                                     .Bind(RecipeCard.TimeToMakeProperty, nameof(Recipe.TimeToMake))
-                                    .Bind(RecipeCard.IsFavoriteProperty, nameof(Recipe.IsFavorite));
+                                    .Bind(RecipeCard.IsFavoriteProperty, nameof(Recipe.IsFavorite), BindingMode.TwoWay);
                                 })
                             }.Bind(CollectionView.ItemsSourceProperty, nameof(_vm.TempRecipes), source: _vm)
                             .Row(1)

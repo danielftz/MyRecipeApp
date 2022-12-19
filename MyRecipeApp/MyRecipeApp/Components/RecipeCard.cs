@@ -1,99 +1,12 @@
 ﻿using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls.Shapes;
+using MyRecipeApp.Model;
 using MyRecipeApp.Tools;
 
 namespace MyRecipeApp.Components
 {
     public class RecipeCard : Border
     {
-        public static readonly BindableProperty RecipeNameProperty = BindableProperty.Create(
-            propertyName: nameof(RecipeName),
-            returnType: typeof(string),
-            declaringType: typeof(RecipeCard)
-        );
-        public string RecipeName
-        {
-            get
-            {
-                return (string)GetValue(RecipeNameProperty);
-            }
-            set
-            {
-                SetValue(RecipeNameProperty, value);
-            }
-        }
-
-
-        #region Calories BindableProperty
-        public static readonly BindableProperty CaloriesProperty = BindableProperty.Create(
-            propertyName: nameof(Calories),
-            returnType: typeof(double),
-            declaringType: typeof(RecipeCard)
-        );
-        public double Calories
-        {
-            get => (double)GetValue(CaloriesProperty);
-            set => SetValue(CaloriesProperty, value);
-        }
-        #endregion
-
-
-        #region Protein BindableProperty
-        public static readonly BindableProperty ProteinProperty = BindableProperty.Create(
-            propertyName: nameof(Protein),
-            returnType: typeof(double),
-            declaringType: typeof(RecipeCard)
-        );
-        public double Protein
-        {
-            get => (double)GetValue(ProteinProperty);
-            set => SetValue(ProteinProperty, value);
-        }
-        #endregion
-
-
-        #region Carbohydrate BindableProperty
-        public static readonly BindableProperty CarbohydrateProperty = BindableProperty.Create(
-            propertyName: nameof(Carbohydrate),
-            returnType: typeof(double),
-            declaringType: typeof(RecipeCard)
-        );
-        public double Carbohydrate
-        {
-            get => (double)GetValue(CarbohydrateProperty);
-            set => SetValue(CarbohydrateProperty, value);
-        }
-        #endregion
-
-
-        #region Fat BindableProperty
-        public static readonly BindableProperty FatProperty = BindableProperty.Create(
-            propertyName: nameof(Fat),
-            returnType: typeof(double),
-            declaringType: typeof(RecipeCard)
-        );
-        public double Fat
-        {
-            get => (double)GetValue(FatProperty);
-            set => SetValue(FatProperty, value);
-        }
-        #endregion
-
-
-        #region TimeToMake BindableProperty
-        public static readonly BindableProperty TimeToMakeProperty = BindableProperty.Create(
-            propertyName: nameof(TimeToMake),
-            returnType: typeof(TimeSpan),
-            declaringType: typeof(RecipeCard)
-        );
-        public TimeSpan TimeToMake
-        {
-            get => (TimeSpan)GetValue(TimeToMakeProperty);
-            set => SetValue(TimeToMakeProperty, value);
-        }
-        #endregion
-
-
         #region IsFavorite BindableProperty
         public static readonly BindableProperty IsFavoriteProperty = BindableProperty.Create(
             propertyName: nameof(IsFavorite),
@@ -106,8 +19,6 @@ namespace MyRecipeApp.Components
             set => SetValue(IsFavoriteProperty, value);
         }
         #endregion
-
-
 
         public RecipeCard()
         {
@@ -125,7 +36,9 @@ namespace MyRecipeApp.Components
                 Opacity = 0.20f,
                 Offset = new Point(5,5),
             };
-            //HeightRequest = 150;
+
+            this.Bind(IsFavoriteProperty, static(Recipe r)=>r.IsFavorite, static()=>, BindingMode.TwoWay)
+
             Content = new Grid
             {
                 RowDefinitions = new RowDefinitionCollection
@@ -153,14 +66,14 @@ namespace MyRecipeApp.Components
                         FontAttributes = FontAttributes.Bold,
                         FontSize = 17,
                     }.Row(0).Column(0).CenterVertical().Start()
-                    .Bind(Label.TextProperty, nameof(RecipeName), BindingMode.OneWay, source: this),
+                    .Bind(Label.TextProperty, static (Recipe r)=>r.Name),
 
                     new Label
                     {
                         TextColor = MyColors.TextPrimary,
                         FontSize = 15,
                     }.Row(1).Column(0).CenterVertical().Start()
-                    .Bind(Label.TextProperty, nameof(Calories), BindingMode.OneWay, source: this,
+                    .Bind(Label.TextProperty, static (Recipe r)=>r.TotalCalories,
                     convert: (double v) =>
                     {
                         return $"Total Calories: {v}";
@@ -172,7 +85,7 @@ namespace MyRecipeApp.Components
                         FontSize = 15,
                         BindingContext = this,
                     }.Row(2).Column(0).CenterVertical().Start()
-                    .Bind(Label.TextProperty, nameof(Protein), BindingMode.OneWay, source: this,
+                    .Bind(Label.TextProperty, static (Recipe r)=>r.TotalProtein,
                     convert: (double v) =>
                     {
                         return $"Total Protein: {v}";
@@ -183,7 +96,7 @@ namespace MyRecipeApp.Components
                         TextColor = MyColors.TextPrimary,
                         FontSize = 15,
                     }.Row(3).Column(0).CenterVertical().Start()
-                    .Bind(Label.TextProperty, nameof(Carbohydrate), BindingMode.OneWay, source: this,
+                    .Bind(Label.TextProperty, static(Recipe r) => r.TotalCarbs,
                     convert: (double v) =>
                     {
                         return $"Total Carbs: {v}";
@@ -194,7 +107,7 @@ namespace MyRecipeApp.Components
                         TextColor = MyColors.TextPrimary,
                         FontSize = 15,
                     }.Row(4).Column(0).CenterVertical().Start()
-                    .Bind(Label.TextProperty, nameof(Fat), BindingMode.OneWay, source: this,
+                    .Bind(Label.TextProperty, static(Recipe r) => r.TotalFat,
                     convert: (double v) =>
                     {
                         return $"Total Fat: {v}";
@@ -206,7 +119,7 @@ namespace MyRecipeApp.Components
                         TextColor = MyColors.TextPrimary,
                         FontSize = 15,
                     }.Row(5).Column(0).CenterVertical().Start()
-                    .Bind(Label.TextProperty, nameof(TimeToMake), BindingMode.OneWay, source: this,
+                    .Bind(Label.TextProperty, static (Recipe r)=>r.TimeToMake,
                     convert: (TimeSpan v) =>
                     {
                         return $"Time To Make: {v}";
@@ -214,10 +127,11 @@ namespace MyRecipeApp.Components
 
                     new ImageButton
                     {
+                        BindingContext = this,
                         Command = new Command (()=> IsFavorite = !IsFavorite),
                     }.Row(0,6).Column(1).Size(25)
                     .End().Top()
-                    .Bind(ImageButton.SourceProperty, nameof(IsFavorite), source: this,
+                    .Bind(ImageButton.SourceProperty, static (Recipe r)=>r.IsFavorite,
                     convert: (bool isFavorite) =>
                     {
                         if (isFavorite)
