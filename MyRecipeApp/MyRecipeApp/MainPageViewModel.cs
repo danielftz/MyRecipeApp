@@ -22,6 +22,7 @@ namespace MyRecipeApp
 
         public MainPageViewModel()
         {
+            RandomRecipe = new Recipe();
             //Retrieve all recipe from the databse
 
             //retrieve a random recipe from the datbase

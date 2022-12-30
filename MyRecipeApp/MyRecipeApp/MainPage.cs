@@ -68,7 +68,7 @@ namespace MyRecipeApp
 
                             new RecipeCard()
                             {
-                                //BindingContext = _vm.RandomRecipe,
+                                BindingContext = _vm.RandomRecipe,
                             }
                             .Row(1).Column(0,2)
                         }
@@ -115,14 +115,7 @@ namespace MyRecipeApp
                                     {
                                         //BindingContext automatically assigned to each item
 
-                                    }
-                                    .Bind(RecipeCard.RecipeNameProperty, nameof(Recipe.Name))
-                                    .Bind(RecipeCard.CaloriesProperty, nameof(Recipe.TotalCalories))
-                                    .Bind(RecipeCard.ProteinProperty, nameof(Recipe.TotalProtein))
-                                    .Bind(RecipeCard.CarbohydrateProperty, nameof(Recipe.TotalCarbs))
-                                    .Bind(RecipeCard.FatProperty, nameof(Recipe.TotalFat))
-                                    .Bind(RecipeCard.TimeToMakeProperty, nameof(Recipe.TimeToMake))
-                                    .Bind(RecipeCard.IsFavoriteProperty, nameof(Recipe.IsFavorite), BindingMode.TwoWay);
+                                    };
                                 })
                             }.Bind(CollectionView.ItemsSourceProperty, nameof(_vm.TempRecipes), source: _vm)
                             .Row(1)

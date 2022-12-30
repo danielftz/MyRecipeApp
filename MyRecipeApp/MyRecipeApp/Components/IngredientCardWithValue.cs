@@ -1,4 +1,6 @@
-﻿using Microsoft.Maui.Controls.Shapes;
+﻿using CommunityToolkit.Maui.Markup;
+using Microsoft.Maui.Controls.Shapes;
+using MyRecipeApp.Model;
 using MyRecipeApp.Tools;
 
 namespace MyRecipeApp.Components
@@ -24,10 +26,50 @@ namespace MyRecipeApp.Components
             {
                 RowDefinitions =
                 {
-                    new RowDefinition {Height = GridLength.Auto},
-                    new RowDefinition {Height = GridLength.Auto},
+                    new RowDefinition { Height = GridLength.Star },
+                    new RowDefinition { Height = GridLength.Star },
                 },
 
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                },
+
+                Children =
+                {
+                    new Label
+                    {
+                    }.Row(0).Column(0,2)
+                    .Bind(Label.TextProperty, static(Ingredient ing) => ing.Name),
+
+                    new Entry
+                    {
+                    }.Row(0).Column(0, 1),
+
+                    new Label
+                    {
+                    }
+                    .Bind(Label.TextProperty, static(Ingredient ing)=> ing.Unit, 
+                    convert: (UnitType u) =>
+                    {
+                        switch (u) 
+                        {
+                            case (UnitType.Single):
+                                return "Item(s)";
+                            case (UnitType.OneGram):
+                                return "g";
+                            case (UnitType.OneHundredGrams):
+                                return "g";
+                            case (UnitType.OneMillileter):
+                                return "mL";
+                            case (UnitType.OneThousandMilliLeters):
+                                return "mL";
+                            default:
+                                throw new InvalidCastException();
+                        }
+                    })
+                }
             };
         }
 

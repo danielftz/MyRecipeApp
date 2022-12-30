@@ -93,7 +93,7 @@ namespace MyRecipeApp
                                 return 2;
                             case (UnitType.OneMillileter):
                                 return 3;
-                            case (UnitType.OneLiter):
+                            case (UnitType.OneThousandMilliLeters):
                                 return 4;
                             default:
                             case(UnitType.OneGram):

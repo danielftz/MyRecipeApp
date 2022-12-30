@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Markup;
+using MyRecipeApp.Components;
 using MyRecipeApp.Model;
 using MyRecipeApp.Tools;
 
@@ -56,7 +57,7 @@ namespace MyRecipeApp
                                 FontSize = 18,
                                 TextColor = Colors.Black,
                             }.Row(0).Column(1,2).CenterVertical().FillHorizontal().TextCenter()
-                            .Bind(Entry.TextProperty, nameof(_vm.Name), source: _vm),
+                            .Bind(Entry.TextProperty, static(CreateARecipePageViewModel vm)=> vm.Name, static(CreateARecipePageViewModel vm, string name)=> vm.Name = name, BindingMode.TwoWay),
 
 
                             new Label
@@ -72,7 +73,7 @@ namespace MyRecipeApp
                                 BackgroundColor = MyColors.Primary,
                                 
                             }.Row(1).Column(2)
-                            .Bind(Button.CommandProperty, nameof(_vm.FindMoreIngredientsCommand), source: _vm),
+                            .Bind(Button.CommandProperty, static(CreateARecipePageViewModel vm)=> vm.FindMoreIngredientsCommand),
 
                         }
                     }.Row(0),
@@ -81,11 +82,13 @@ namespace MyRecipeApp
                     {
                         ItemTemplate = new DataTemplate(() =>
                         {
-                            return new Label{ }.Bind(Label.TextProperty, nameof(Ingredient.Name));
+
+                            return new IngredientCardWithValue();
+                            
                         })
                         
                     }.Row(1)
-                    .Bind(CollectionView.ItemsSourceProperty, nameof(_vm.Ingredients), source: _vm),
+                    .Bind(CollectionView.ItemsSourceProperty, static(CreateARecipePageViewModel vm)=> vm.Ingredients),
 
                     new Grid
                     {
@@ -107,7 +110,7 @@ namespace MyRecipeApp
                             {
                                 MinimumWidthRequest = 600,
                             }.Row(1)
-                            .Bind(Editor.TextProperty, nameof(_vm.Instruction), source: _vm),
+                            .Bind(Editor.TextProperty, static (CreateARecipePageViewModel)=>),
 
                             new Button
                             {

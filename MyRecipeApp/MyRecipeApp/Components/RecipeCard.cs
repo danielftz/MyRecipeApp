@@ -37,7 +37,7 @@ namespace MyRecipeApp.Components
                 Offset = new Point(5,5),
             };
 
-            this.Bind(IsFavoriteProperty, static(Recipe r)=>r.IsFavorite, static()=>, BindingMode.TwoWay)
+            this.Bind(IsFavoriteProperty, static (Recipe r) => r.IsFavorite, static (Recipe r, bool isFavorite) => r.IsFavorite = isFavorite, BindingMode.TwoWay);
 
             Content = new Grid
             {

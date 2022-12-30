@@ -39,15 +39,15 @@ namespace MyRecipeApp.Model
 
         public static readonly ReadOnlyCollection<string> UnitNames = new ReadOnlyCollection<string>(new List<string>
         {
-            "Single","1g", "100g", "1mL", "1L"
+            "Single","1g", "100g", "1mL", "1000mL"
         });
 
         public static readonly ReadOnlyDictionary<UnitType, int> UnitValueLookUp = new(new Dictionary<UnitType, int> {
             { UnitType.Single, 1 },
             { UnitType.OneGram, 1 },
             { UnitType.OneHundredGrams, 100 },
-            { UnitType.OneMillileter, 1000 },
-            { UnitType.OneLiter, 1 }
+            { UnitType.OneMillileter, 1 },
+            { UnitType.OneThousandMilliLeters, 1000 }
         });
     }
 
@@ -61,7 +61,7 @@ namespace MyRecipeApp.Model
 
         OneMillileter = 3,
 
-        OneLiter = 4,
+        OneThousandMilliLeters = 4,
     }
 
     public class IngredientDatabaseRow

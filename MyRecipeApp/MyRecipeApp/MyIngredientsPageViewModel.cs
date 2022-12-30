@@ -1,4 +1,5 @@
-﻿using MyRecipeApp.Model;
+﻿using AndroidX.Emoji2.Text.FlatBuffer;
+using MyRecipeApp.Model;
 using RecipeApp.Tools;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -58,12 +59,30 @@ namespace MyRecipeApp
                 await service.RemoveIngredientAsync(ingredient.Name);
             });
 
+
             RefreshItemsCommand = new Command<RefreshView>(async(refreshView) =>
             {
                 List<Ingredient> list = await service.GetAllIngredientsAsync();
-                StoredIngredients = new ObservableCollection<Ingredient>(list);
+                for (int i = StoredIngredients.Count- 1; i >= 0; i--)
+                {
+                    if (list.Contains(StoredIngredients[i]) is not true)
+                    {
+                        StoredIngredients.RemoveAt(i);
+                    }
+
+                }
+
+                foreach(Ingredient ing in list)
+                {
+                    if (StoredIngredients.Contains(ing) is not true)
+                    {
+                        StoredIngredients.Add(ing);
+                    }
+                }
+
                 refreshView.IsRefreshing = false;
             });
+
 
             SaveToRecipeCommand = new Command(() =>
             {

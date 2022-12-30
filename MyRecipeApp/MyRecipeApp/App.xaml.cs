@@ -23,6 +23,7 @@ public partial class App : Application
         {
             await DatabaseService.OpenConnectionAsync();
         };
+
         //raised when the window is being destroyed and deallocated.
         window.Destroying += async (s, e) =>
         {
