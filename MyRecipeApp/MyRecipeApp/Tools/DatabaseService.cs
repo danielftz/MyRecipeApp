@@ -42,8 +42,6 @@ namespace RecipeApp.Tools
         }
 
         //CRUD for Ingredients
-
-
         public async Task<int> AddIngredientAsync(Ingredient ingredient)
         {
             return await _dbConnection.InsertAsync(new IngredientDatabaseRow(ingredient));
@@ -134,5 +132,6 @@ namespace RecipeApp.Tools
         {
             return await _dbConnection.DeleteAsync<RecipeDatabaseRow>(name);
         }
+        
     }
 }

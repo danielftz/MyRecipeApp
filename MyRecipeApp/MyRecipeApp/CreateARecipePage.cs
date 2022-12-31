@@ -2,6 +2,7 @@
 using MyRecipeApp.Components;
 using MyRecipeApp.Model;
 using MyRecipeApp.Tools;
+using System.Collections.ObjectModel;
 
 namespace MyRecipeApp
 {
@@ -57,7 +58,9 @@ namespace MyRecipeApp
                                 FontSize = 18,
                                 TextColor = Colors.Black,
                             }.Row(0).Column(1,2).CenterVertical().FillHorizontal().TextCenter()
-                            .Bind(Entry.TextProperty, static(CreateARecipePageViewModel vm)=> vm.Name, static(CreateARecipePageViewModel vm, string name)=> vm.Name = name, BindingMode.TwoWay),
+                            .Bind(Entry.TextProperty, 
+                            static(CreateARecipePageViewModel vm)=> vm.Name, 
+                            static(CreateARecipePageViewModel vm, string name)=> vm.Name = name, BindingMode.TwoWay),
 
 
                             new Label
@@ -83,7 +86,40 @@ namespace MyRecipeApp
                         ItemTemplate = new DataTemplate(() =>
                         {
 
-                            return new IngredientCardWithValue();
+                            IngredientCardWithValue card = new IngredientCardWithValue();
+
+
+                            card.BindingContextChanged += (s, e) =>
+                            {
+                                card.Bind(IngredientCardWithValue.IndexProperty,
+                                new Binding("."),
+                                new Binding(nameof(_vm.Ingredients), source: _vm),
+                                convert: ((Ingredient ing, ObservableCollection<Ingredient> list) v) =>
+                                {
+                                    int idx = v.list.IndexOf(v.ing);
+                                    return idx;
+                                });
+
+                                card.Bind(IngredientCardWithValue.AmountProperty,
+                                new Binding(nameof(IngredientCardWithValue.Index), source: card),
+                                new Binding(nameof(_vm.IngredientAmount), source: _vm),
+                                convert: ((int idx, ObservableCollection<double> list) v) =>
+                                {
+                                    return v.list[v.idx];
+                                });
+
+                                card.PropertyChanged += (s, e) =>
+                                {
+                                    if (e.PropertyName is nameof(IngredientCardWithValue.Amount))
+                                    {
+                                        _vm.IngredientAmount[card.Index] = card.Amount;
+                                    }
+                                };
+
+                            };
+
+                            
+                            return card;
                             
                         })
                         
@@ -110,7 +146,9 @@ namespace MyRecipeApp
                             {
                                 MinimumWidthRequest = 600,
                             }.Row(1)
-                            .Bind(Editor.TextProperty, static (CreateARecipePageViewModel)=>),
+                            .Bind(Editor.TextProperty, 
+                            static (CreateARecipePageViewModel vm)=> vm.Instruction, 
+                            static (CreateARecipePageViewModel vm, string instruction) => vm.Instruction = instruction, BindingMode.TwoWay),
 
                             new Button
                             {
@@ -120,7 +158,7 @@ namespace MyRecipeApp
                                 TextColor = Colors.White,
 
                             }.Row(2)
-                            .Bind(Button.CommandProperty, nameof(_vm.SaveRecipeCommand), source: _vm),
+                            .Bind(Button.CommandProperty, static(CreateARecipePageViewModel vm) => vm.SaveRecipeCommand),
                         }
 
                     }.Row(2),

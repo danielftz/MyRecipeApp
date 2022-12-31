@@ -7,6 +7,34 @@ namespace MyRecipeApp.Components
 {
     public class IngredientCardWithValue : Border
     {
+
+        #region Index BindableProperty
+        public static readonly BindableProperty IndexProperty = BindableProperty.Create(
+            propertyName: nameof(Index),
+            returnType: typeof(int),
+            declaringType: typeof(IngredientCardWithValue),
+            defaultValue: 0
+        );
+        public int Index
+        {
+            get => (int)GetValue(IndexProperty);
+            set => SetValue(IndexProperty, value);
+        }
+        #endregion
+
+        #region Amount BindableProperty
+        public static readonly BindableProperty AmountProperty = BindableProperty.Create(
+            propertyName: nameof(Amount),
+            returnType: typeof(double),
+            declaringType: typeof(IngredientCardWithValue)
+        );
+        public double Amount
+        {
+            get => (double)GetValue(AmountProperty);
+            set => SetValue(AmountProperty, value);
+        }
+        #endregion
+
         public IngredientCardWithValue()
         {
             StrokeShape = new RoundRectangle
@@ -27,7 +55,7 @@ namespace MyRecipeApp.Components
                 RowDefinitions =
                 {
                     new RowDefinition { Height = GridLength.Star },
-                    new RowDefinition { Height = GridLength.Star },
+                    new RowDefinition { Height = GridLength.Auto },
                 },
 
                 ColumnDefinitions =
@@ -45,18 +73,33 @@ namespace MyRecipeApp.Components
 
                     new Entry
                     {
-                    }.Row(0).Column(0, 1),
+                        Keyboard = Keyboard.Numeric,
+                        BindingContext = this
+                    }.Row(1).Column(0)
+                    .Bind(Entry.TextProperty, nameof(Amount), BindingMode.TwoWay,
+                    convert: (double d) =>
+                    {
+                        return d.ToString();
+                    },
+                    convertBack: (string s) =>
+                    {
+                        if (double.TryParse(s, out var d))
+                        {
+                            return d;
+                        }
+                        return 0;
+                    }),
 
                     new Label
                     {
-                    }
+                    }.Row(1).Column(2)
                     .Bind(Label.TextProperty, static(Ingredient ing)=> ing.Unit, 
                     convert: (UnitType u) =>
                     {
                         switch (u) 
                         {
                             case (UnitType.Single):
-                                return "Item(s)";
+                                return "item(s)";
                             case (UnitType.OneGram):
                                 return "g";
                             case (UnitType.OneHundredGrams):

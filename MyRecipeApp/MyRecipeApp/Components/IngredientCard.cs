@@ -114,7 +114,7 @@ namespace MyRecipeApp.Components
                         {
                             TextColor = MyColors.TextPrimary,
                             FontSize = 15,
-                        }.Row(1).Column(0).CenterVertical().Start()
+                        }.Row(2).Column(0).CenterVertical().Start()
                         .Bind(Label.TextProperty, static(Ingredient ing)=>ing.CaloriesPerUnit,
                         convert: (double v) =>
                         {
@@ -126,7 +126,7 @@ namespace MyRecipeApp.Components
                             TextColor = MyColors.TextPrimary,
                             FontSize = 15,
                             BindingContext = this,
-                        }.Row(2).Column(0).CenterVertical().Start()
+                        }.Row(3).Column(0).CenterVertical().Start()
                         .Bind(Label.TextProperty, static(Ingredient ing)=>ing.ProteinPerUnit,
                         convert: (double v) =>
                         {
@@ -137,7 +137,7 @@ namespace MyRecipeApp.Components
                         {
                             TextColor = MyColors.TextPrimary,
                             FontSize = 15,
-                        }.Row(3).Column(0).CenterVertical().Start()
+                        }.Row(4).Column(0).CenterVertical().Start()
                         .Bind(Label.TextProperty, static(Ingredient ing) => ing.CarbsPerUnit,
                         convert: (double v) =>
                         {
@@ -148,7 +148,7 @@ namespace MyRecipeApp.Components
                         {
                             TextColor = MyColors.TextPrimary,
                             FontSize = 15,
-                        }.Row(4).Column(0).CenterVertical().Start()
+                        }.Row(5).Column(0).CenterVertical().Start()
                         .Bind(Label.TextProperty, static(Ingredient ing) => ing.FatPerUnit,
                         convert: (double v) =>
                         {
