@@ -42,24 +42,33 @@ namespace MyRecipeApp
                         RefreshColor = MyColors.Primary,
                         Content =  new CollectionView
                         {
-                            SelectionMode = SelectionMode.Multiple,
+                            SelectionMode = SelectionMode.None,
                             ItemSizingStrategy = ItemSizingStrategy.MeasureAllItems,
                             ItemsLayout = new LinearItemsLayout (ItemsLayoutOrientation.Vertical)
                             {
                                 ItemSpacing = 10,
                             },
+                            BackgroundColor = Colors.White,
                             ItemTemplate = new DataTemplate(() =>
                             {
                                 return new IngredientCard()
                                 {
                                 }
-                                .Bind(IngredientCard.RemoveCommandProperty, nameof(_vm.RemoveCommand), source: _vm)
+                                .Bind(IngredientCard.RemoveCommandProperty, static(MyIngredientsPageViewModel vm) => vm.RemoveCommand, source: _vm)
                                 .Bind(IngredientCard.RemoveCommandParameterProperty, ".")
-                                ;
+                                .Bind(IngredientCard.SelectCommandProperty, static(MyIngredientsPageViewModel vm) => vm.SelectCommand, source: _vm)
+                                .Bind(IngredientCard.SelectCommandParameterProperty, ".")
+                                .Bind(IngredientCard.IsSelectedProperty,
+                                new Binding("."),
+                                new Binding(nameof(_vm.SelectedIngredients), source: _vm),
+                                convert: ((Ingredient ing, ObservableCollection<Ingredient> list) v) =>
+                                {
+                                    return v.list.Contains(v.ing);
+                                });
                             })
                         }
                         .Bind(CollectionView.ItemsSourceProperty, nameof(_vm.StoredIngredients), source: _vm)
-                        .Bind(CollectionView.SelectedItemsProperty, nameof(_vm.SelectedIngredients), source: _vm),
+                        //.Bind(CollectionView.SelectedItemsProperty, nameof(_vm.SelectedIngredients), source: _vm),
                     }.Row(1)
                     .Assign(out _refreshView)
                     .Bind(RefreshView.CommandProperty, nameof(_vm.RefreshItemsCommand), source:_vm )

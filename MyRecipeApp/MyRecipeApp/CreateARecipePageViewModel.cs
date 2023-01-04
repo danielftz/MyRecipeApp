@@ -130,6 +130,7 @@ namespace MyRecipeApp
                     Recipe recipe = new Recipe(Ingredients, IngredientAmount)
                     {
                         Name = Name,
+                  
                         Instruction = Instruction,
                         TimeToMake = TimeSpan.FromMinutes(30),
                         IsFavorite = true,

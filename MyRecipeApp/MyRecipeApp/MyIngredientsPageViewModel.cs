@@ -1,5 +1,4 @@
-﻿using AndroidX.Emoji2.Text.FlatBuffer;
-using MyRecipeApp.Model;
+﻿using MyRecipeApp.Model;
 using RecipeApp.Tools;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -11,8 +10,8 @@ namespace MyRecipeApp
     {
         public ICommand RemoveCommand { get; set; }
         public ICommand RefreshItemsCommand { get; set; }
-
         public ICommand SaveToRecipeCommand { get; set; }
+        public ICommand SelectCommand { get; set; }
 
         private ObservableCollection<Ingredient> _storedIngredients = new();
         public ObservableCollection<Ingredient> StoredIngredients
@@ -21,8 +20,8 @@ namespace MyRecipeApp
             set => SetValue(ref _storedIngredients, value);
         }
 
-        private ObservableCollection<object> _selectedIngredients = new();
-        public ObservableCollection<object> SelectedIngredients
+        private ObservableCollection<Ingredient> _selectedIngredients = new();
+        public ObservableCollection<Ingredient> SelectedIngredients
         {
             get => _selectedIngredients;
             set => SetValue(ref _selectedIngredients, value);
@@ -48,15 +47,19 @@ namespace MyRecipeApp
                     }
                 }
 
-                SelectedIngredients = new ObservableCollection<object>(selected);
+                SelectedIngredients = new ObservableCollection<Ingredient>(selected);
             });
 
 
             RemoveCommand = new Command<Ingredient>(async (ingredient) =>
             {
-                SelectedIngredients.Remove(ingredient);
-                StoredIngredients.Remove(ingredient);
-                await service.RemoveIngredientAsync(ingredient.Name);
+                bool confirmRemoval = await App.Current.MainPage.DisplayAlert("Confirm", "Do you want to remove this ingredient from the database?", "Yes", "No");
+                if (confirmRemoval is true)
+                {
+                    SelectedIngredients.Remove(ingredient);
+                    StoredIngredients.Remove(ingredient);
+                    await service.RemoveIngredientAsync(ingredient.Name);
+                }
             });
 
 
@@ -83,6 +86,19 @@ namespace MyRecipeApp
                 refreshView.IsRefreshing = false;
             });
 
+
+            SelectCommand = new Command<Ingredient>((Ingredient ing) =>
+            {
+                if (SelectedIngredients.Contains(ing) is true)
+                {
+                    SelectedIngredients.Remove(ing);
+                }
+                else
+                {
+                    SelectedIngredients.Add(ing);
+                }
+
+            });
 
             SaveToRecipeCommand = new Command(() =>
             {

@@ -39,7 +39,7 @@ namespace MyRecipeApp.Model
 
         public static readonly ReadOnlyCollection<string> UnitNames = new ReadOnlyCollection<string>(new List<string>
         {
-            "Single","1g", "100g", "1mL", "1000mL"
+            "Single Item","1g", "100g", "1mL", "1000mL"
         });
 
         public static readonly ReadOnlyDictionary<UnitType, int> UnitValueLookUp = new(new Dictionary<UnitType, int> {
