@@ -59,9 +59,9 @@ namespace RecipeApp.Tools
             return ing;
         }
 
-        public async Task<Ingredient?> GetIngredientByNameAsync(string name)
+        public async Task<Ingredient> GetIngredientByNameAsync(string name)
         {
-            IngredientDatabaseRow? data = await _dbConnection.FindAsync<IngredientDatabaseRow>(name);
+            IngredientDatabaseRow data = await _dbConnection.FindAsync<IngredientDatabaseRow>(name);
             if (data is not null)
             {
                 return new Ingredient(data);

@@ -14,7 +14,11 @@ namespace MyRecipeApp.Components
         public static readonly BindableProperty IsSelectedProperty = BindableProperty.Create(
             propertyName: nameof(IsSelected),
             returnType: typeof(bool),
-            declaringType: typeof(IngredientCard)
+            declaringType: typeof(IngredientCard),
+            propertyChanged: (b, o, n) =>
+            {
+
+            }
         );
         public bool IsSelected
         {
@@ -53,29 +57,29 @@ namespace MyRecipeApp.Components
         #region SelectCommand BindableProperty
         public static readonly BindableProperty SelectCommandProperty = BindableProperty.Create(
             propertyName: nameof(SelectCommand),
-            returnType: typeof(ICommand),
+            returnType: typeof(Command<Ingredient>),
             declaringType: typeof(IngredientCard)
         );
-        public ICommand SelectCommand
+        public Command<Ingredient> SelectCommand
         {
-            get => (ICommand)GetValue(SelectCommandProperty);
+            get => (Command<Ingredient>)GetValue(SelectCommandProperty);
             set => SetValue(SelectCommandProperty, value);
         }
         #endregion
 
 
-        #region SelectCommandParameter BindableProperty
-        public static readonly BindableProperty SelectCommandParameterProperty = BindableProperty.Create(
-            propertyName: nameof(SelectCommandParameter),
-            returnType: typeof(object),
-            declaringType: typeof(IngredientCard)
-        );
-        public object SelectCommandParameter
-        {
-            get => (object)GetValue(SelectCommandParameterProperty);
-            set => SetValue(SelectCommandParameterProperty, value);
-        }
-        #endregion
+        //#region SelectCommandParameter BindableProperty
+        //public static readonly BindableProperty SelectCommandParameterProperty = BindableProperty.Create(
+        //    propertyName: nameof(SelectCommandParameter),
+        //    returnType: typeof(object),
+        //    declaringType: typeof(IngredientCard)
+        //);
+        //public object SelectCommandParameter
+        //{
+        //    get => (object)GetValue(SelectCommandParameterProperty);
+        //    set => SetValue(SelectCommandParameterProperty, value);
+        //}
+        //#endregion
 
 
 
@@ -199,6 +203,15 @@ namespace MyRecipeApp.Components
                         BorderColor = MyColors.Primary,
                         TextColor = MyColors.Primary,
                         FontSize = 15,
+                        Command = new Command(() =>
+                        {
+                            IsSelected = !IsSelected;
+                            Ingredient ing = BindingContext as Ingredient;
+                            if (ing is not null)
+                            {
+                                SelectCommand?.Execute(BindingContext);
+                            }
+                        })
                     }.Row(5).Column(0, 2).Fill()
                     .Bind(Button.TextProperty, static(IngredientCard card)=>card.IsSelected, convert: (bool isSelected) =>
                     {
@@ -207,9 +220,8 @@ namespace MyRecipeApp.Components
                             return "Unselect";
                         }
                         return "Select";
-                    })
-                    .Bind(Button.CommandProperty, static(IngredientCard card)=>card.SelectCommand)
-                    .Bind(Button.CommandParameterProperty, static(IngredientCard card)=>card.SelectCommandParameter),
+                    }),
+
 
                     new Button
                     {
@@ -220,7 +232,7 @@ namespace MyRecipeApp.Components
                         FontSize = 15,
                         Text = "Remove"
                     }.Row(5).Column(2).Fill()
-                    .Bind(Button.CommandProperty, static(IngredientCard card)=>card.RemoveCommand)
+                    .Bind(Button.CommandProperty , static(IngredientCard card)=>card.RemoveCommand)
                     .Bind(Button.CommandParameterProperty, static(IngredientCard card)=>card.RemoveCommandParameter),
                 }
             };

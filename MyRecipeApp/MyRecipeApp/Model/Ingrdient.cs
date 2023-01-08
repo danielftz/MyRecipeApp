@@ -6,7 +6,6 @@ namespace MyRecipeApp.Model
 {
     public class Ingredient
     {
-
         public string Name { get; set; } = string.Empty;
 
         public UnitType Unit { get; set; }
@@ -23,7 +22,6 @@ namespace MyRecipeApp.Model
 
         public Ingredient()
         {
-
         }
 
         public Ingredient(IngredientDatabaseRow data)

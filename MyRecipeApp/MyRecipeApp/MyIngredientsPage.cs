@@ -51,20 +51,21 @@ namespace MyRecipeApp
                             BackgroundColor = Colors.White,
                             ItemTemplate = new DataTemplate(() =>
                             {
-                                return new IngredientCard()
+                                IngredientCard card = new IngredientCard()
                                 {
-                                }
-                                .Bind(IngredientCard.RemoveCommandProperty, static(MyIngredientsPageViewModel vm) => vm.RemoveCommand, source: _vm)
+                                }.Bind(IngredientCard.RemoveCommandProperty, static(MyIngredientsPageViewModel vm) => vm.RemoveCommand, source: _vm)
                                 .Bind(IngredientCard.RemoveCommandParameterProperty, ".")
-                                .Bind(IngredientCard.SelectCommandProperty, static(MyIngredientsPageViewModel vm) => vm.SelectCommand, source: _vm)
-                                .Bind(IngredientCard.SelectCommandParameterProperty, ".")
-                                .Bind(IngredientCard.IsSelectedProperty,
-                                new Binding("."),
-                                new Binding(nameof(_vm.SelectedIngredients), source: _vm),
-                                convert: ((Ingredient ing, ObservableCollection<Ingredient> list) v) =>
+                                .Bind(IngredientCard.SelectCommandProperty, static(MyIngredientsPageViewModel vm) => vm.SelectCommand, source: _vm);
+
+                                //first time select
+                                card.BindingContextChanged += (s, e) =>
                                 {
-                                    return v.list.Contains(v.ing);
-                                });
+                                    card.Bind(IngredientCard.IsSelectedProperty, nameof(_vm.SelectedIngredients), BindingMode.OneTime, source: _vm, convert: (ObservableCollection<Ingredient>selected) =>
+                                    {
+                                        return selected.Contains(card.BindingContext);
+                                    });
+                                };
+                                return card;
                             })
                         }
                         .Bind(CollectionView.ItemsSourceProperty, nameof(_vm.StoredIngredients), source: _vm)
@@ -75,7 +76,7 @@ namespace MyRecipeApp
                     .Bind(RefreshView.CommandParameterProperty, nameof(RefreshView), source: this ),
 
 
-                     new Button
+                    new Button
                     {
                         Text = "Save Selection",
                         BackgroundColor = Color.FromArgb("#A757D8"),

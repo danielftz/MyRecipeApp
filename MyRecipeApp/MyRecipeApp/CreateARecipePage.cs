@@ -14,78 +14,73 @@ namespace MyRecipeApp
             Title = "Create A Recipe";
             BindingContext = _vm = new CreateARecipePageViewModel(Navigation, recipe);
 
-            Content = new Grid
+            Content = new ScrollView
             {
-                Padding = new Thickness(30,15),
-                ColumnSpacing = 15,
-                RowDefinitions =
+                Content = new VerticalStackLayout
                 {
-                    new RowDefinition() {Height = new GridLength(1, GridUnitType.Star)},
-                    new RowDefinition() {Height = new GridLength(2, GridUnitType.Star)},
-                    new RowDefinition() {Height = new GridLength(2, GridUnitType.Star)},
-                },
-
-                Children =
-                {
-                    new Grid
+                    Padding = 30,
+                    Children =
                     {
-                        RowDefinitions =
+                        new Grid
                         {
-                            new RowDefinition(),
-                            new RowDefinition(){ Height = GridLength.Auto},
+                            RowDefinitions =
+                            {
+                                new RowDefinition() { Height = GridLength.Star },
+                                new RowDefinition() { Height = GridLength.Star },
+                            },
+                            ColumnDefinitions =
+                            {
+                                new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) },
+                                new ColumnDefinition() { Width = new GridLength(1.5, GridUnitType.Star) },
+                                new ColumnDefinition() { Width = new GridLength(1.5, GridUnitType.Star) },
+                                new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) },
+                            },
+                            RowSpacing = 15,
+                            ColumnSpacing = 15,
+                            Children =
+                            {
+                                new Label
+                                {
+                                    Text = "Name",
+                                    FontSize = 18,
+                                    TextColor = MyColors.TextPrimary,
+                                }.Row(0).Column(0).Start().CenterVertical(),
+
+
+                                new Entry
+                                {
+                                    BackgroundColor = MyColors.Background,
+                                    Placeholder = "Enter the name of the recipe",
+                                    FontSize = 18,
+                                    TextColor = Colors.Black,
+                                }.Row(0).Column(1, 3).CenterVertical().FillHorizontal().TextCenter()
+                                .Bind(Entry.TextProperty,
+                                static (CreateARecipePageViewModel vm) => vm.Name,
+                                static (CreateARecipePageViewModel vm, string name) => vm.Name = name, BindingMode.TwoWay),
+
+
+                                new Label
+                                {
+                                    Text = "Ingredients",
+                                    FontSize = 18,
+                                    TextColor = MyColors.TextPrimary,
+                                }.Row(1).Column(0, 3).Start().CenterVertical(),
+
+                                new Button
+                                {
+                                    Text = "Add",
+                                    BackgroundColor = MyColors.Primary,
+
+                                }.Row(1).Column(3)
+                                .Bind(Button.CommandProperty, static (CreateARecipePageViewModel vm) => vm.FindMoreIngredientsCommand),
+
+                            }
                         },
-                        ColumnDefinitions =
+
+                        new VerticalStackLayout
                         {
-                            new ColumnDefinition(){ Width = new GridLength(1, GridUnitType.Star)},
-                            new ColumnDefinition(){ Width = new GridLength(3, GridUnitType.Star)},
-                            new ColumnDefinition(){ Width = new GridLength(1, GridUnitType.Star)},
-                        },
-
-                        Children =
+                        }.ItemTemplate(new DataTemplate(() =>
                         {
-                            new Label
-                            {
-                                Text = "Name",
-                                FontSize = 18,
-                                TextColor = MyColors.TextPrimary,
-                            }.Row(0).Column(0).Start().CenterVertical(),
-
-                   
-                            new Entry
-                            {
-                                BackgroundColor = MyColors.Background,
-                                Placeholder = "Enter the name of the recipe",
-                                FontSize = 18,
-                                TextColor = Colors.Black,
-                            }.Row(0).Column(1,2).CenterVertical().FillHorizontal().TextCenter()
-                            .Bind(Entry.TextProperty, 
-                            static(CreateARecipePageViewModel vm)=> vm.Name, 
-                            static(CreateARecipePageViewModel vm, string name)=> vm.Name = name, BindingMode.TwoWay),
-
-
-                            new Label
-                            {
-                                Text = "Ingredients",
-                                FontSize = 18,
-                                TextColor = MyColors.TextPrimary,
-                            }.Row(1).Column(0,2).Start().CenterVertical(),
-
-                            new Button
-                            {
-                                Text = "Add",
-                                BackgroundColor = MyColors.Primary,
-                                
-                            }.Row(1).Column(2)
-                            .Bind(Button.CommandProperty, static(CreateARecipePageViewModel vm)=> vm.FindMoreIngredientsCommand),
-
-                        }
-                    }.Row(0),
-
-                    new CollectionView
-                    {
-                        ItemTemplate = new DataTemplate(() =>
-                        {
-
                             IngredientCardWithValue card = new IngredientCardWithValue();
 
 
@@ -118,56 +113,47 @@ namespace MyRecipeApp
 
                             };
 
-                            
+
                             return card;
-                            
-                        })
-                        
-                    }.Row(1)
-                    .Bind(CollectionView.ItemsSourceProperty, static(CreateARecipePageViewModel vm)=> vm.Ingredients),
-
-                    new Grid
-                    {
-                        RowDefinitions =
+                        }))
+                        .EmptyView(new Label
                         {
-                            new RowDefinition() {Height = new GridLength(40, GridUnitType.Absolute)},
-                            new RowDefinition() {Height = new GridLength(1, GridUnitType.Star)},
-                            new RowDefinition() {Height = new GridLength(40, GridUnitType.Absolute)},
-                        },
+                            Text = "Selected ingredients will show up here",
+                            FontSize = 18,
+                            TextColor = Colors.Gray,
+                            Margin = new Thickness(15,0,15,15)
+                        }.Center().TextStart())
+                        .Bind(BindableLayout.ItemsSourceProperty, static (CreateARecipePageViewModel vm) => vm.Ingredients),
 
-                        Children =
+                        new Label
                         {
-                            new Label
-                            {
-                                Text = "Cooking Instruction"
-                            }.Row(0),
+                            Text = "Cooking Instruction",
+                            FontSize = 18,
+                            TextColor = MyColors.TextPrimary,
+                        }.Row(0),
 
-                            new Editor
-                            {
-                                MinimumWidthRequest = 600,
-                            }.Row(1)
-                            .Bind(Editor.TextProperty, 
-                            static (CreateARecipePageViewModel vm)=> vm.Instruction, 
-                            static (CreateARecipePageViewModel vm, string instruction) => vm.Instruction = instruction, BindingMode.TwoWay),
+                        new Editor
+                        {
+                            MinimumWidthRequest = 600,
+                            AutoSize = EditorAutoSizeOption.TextChanges,
+                            Placeholder = "Please enter the cooking instruction here"
+                        }.Row(1)
+                        .Bind(Editor.TextProperty,
+                        static (CreateARecipePageViewModel vm) => vm.Instruction,
+                        static (CreateARecipePageViewModel vm, string instruction) => vm.Instruction = instruction, BindingMode.TwoWay),
 
-                            new Button
-                            {
-                                Text = "Save",
-                                FontSize = 17,
-                                BackgroundColor = Color.FromArgb("#A757D8"),
-                                TextColor = Colors.White,
+                        new Button
+                        {
+                            Text = "Save",
+                            FontSize = 17,
+                            BackgroundColor = Color.FromArgb("#A757D8"),
+                            TextColor = Colors.White,
 
-                            }.Row(2)
-                            .Bind(Button.CommandProperty, static(CreateARecipePageViewModel vm) => vm.SaveRecipeCommand),
-                        }
-
-                    }.Row(2),
-
-
-
+                        }.Row(2)
+                        .Bind(Button.CommandProperty, static (CreateARecipePageViewModel vm) => vm.SaveRecipeCommand),
+                    }
                 }
             };
-
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MyRecipeApp.Model;
+﻿using MyRecipeApp.Components;
+using MyRecipeApp.Model;
 using RecipeApp.Tools;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -47,7 +48,15 @@ namespace MyRecipeApp
                     }
                 }
 
-                SelectedIngredients = new ObservableCollection<Ingredient>(selected);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    SelectedIngredients = new ObservableCollection<Ingredient>(selected);
+                    SelectedIngredients.CollectionChanged += (s, e) =>
+                    {
+                        OnPropertyChanged(nameof(SelectedIngredients));
+                    };
+                });
+                
             });
 
 
